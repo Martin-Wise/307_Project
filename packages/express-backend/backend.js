@@ -1,9 +1,11 @@
 import express from "express"
+import cors from "cors"
 
 const app = express()
 const port = 8000
 
-app.use(express.json())
+app.use(cors());
+app.use(express.json());
 
 app.get("/", (req, res) => {
     res.send("Hello World!");
@@ -40,8 +42,9 @@ app.get("/users/:id", (req, res) => {
 
 app.post("/users", (req, res) => {
     const userToAdd = req.body;
+    req.body.id = genID()
     addUser(userToAdd);
-    res.send();
+    res.status(201).send(userToAdd);
   });
 
 app.delete("/users/:id", (req, res) => {
@@ -51,7 +54,7 @@ app.delete("/users/:id", (req, res) => {
         res.status(404).send("Resource not found.");
     } else {
         removeUser(id)
-        res.send("User deleted successfully")
+        res.status(204).send("User deleted successfully")
     }
 })
 
@@ -60,6 +63,9 @@ app.listen(port, () => {
         `Example app listening at http://localhost:${port}`
     );
 });
+
+const genID = () =>
+    (Math.floor((Math.random() * (999999 - 100000 + 1)) + 100000)).toString();
 
 const findUserById = (id) =>
   users["users_list"].find((user) => user["id"] === id);
@@ -75,7 +81,6 @@ const finduserByNandJ = (name, job) => {
       (user) => user["name"] === name && user["job"] === job
     );
 };
-finduserByNandJ
 
 const addUser = (user) => {
     users["users_list"].push(user);
