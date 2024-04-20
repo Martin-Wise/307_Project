@@ -12,7 +12,14 @@ app.get("/", (req, res) => {
 
 app.get("/users", (req, res) => {
     const name = req.query.name;
-    if (name != undefined) {
+    const job = req.query.job;
+
+    if (name != undefined && job != undefined) {
+      let result = finduserByNandJ(name, job);
+      result = { user_list: result};
+      res.send(result);
+    }
+    else if (name != undefined) {
       let result = findUserByName(name);
       result = { users_list: result };
       res.send(result);
@@ -31,6 +38,23 @@ app.get("/users/:id", (req, res) => {
   }
 });
 
+app.post("/users", (req, res) => {
+    const userToAdd = req.body;
+    addUser(userToAdd);
+    res.send();
+  });
+
+app.delete("/users/:id", (req, res) => {
+    const id = req.params["id"];
+    let result = findUserById(id);
+    if (result === undefined) {
+        res.status(404).send("Resource not found.");
+    } else {
+        removeUser(id)
+        res.send("User deleted successfully")
+    }
+})
+
 app.listen(port, () => {
     console.log(
         `Example app listening at http://localhost:${port}`
@@ -44,6 +68,23 @@ const findUserByName = (name) => {
     return users["users_list"].filter(
       (user) => user["name"] === name
     );
+};
+
+const finduserByNandJ = (name, job) => {
+    return users["users_list"].filter(
+      (user) => user["name"] === name && user["job"] === job
+    );
+};
+finduserByNandJ
+
+const addUser = (user) => {
+    users["users_list"].push(user);
+    return user;
+  };
+
+const removeUser = (userId) => {
+    users["users_list"] = users["users_list"].filter(user => user.id !== userId)
+    return userId;
 };
 
 const users = {
