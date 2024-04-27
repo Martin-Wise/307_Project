@@ -12,7 +12,7 @@ function MyApp() {
   }
 
   function postUser(person) {
-    const promise = fetch("Http://localhost:8000/users", {
+    const promise = fetch("http://localhost:8000/users", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -25,7 +25,7 @@ function MyApp() {
 
 
   function deleteUser(personID) {
-    const promise = fetch(`Http://localhost:8000/users/${personID}`, {
+    const promise = fetch(`http://localhost:8000/users/${personID}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -40,10 +40,6 @@ function MyApp() {
       .then((json) => setCharacters(json["users_list"]))
       .catch((error) => { console.log(error); });
   }, [] );
-
-
-
-
 
 
   function removeOneCharacter(index, id) {
@@ -63,6 +59,7 @@ function MyApp() {
     setCharacters(updated);
   }
 
+
   function updateList(person) { 
     postUser(person)
       .then(response => {
@@ -71,7 +68,7 @@ function MyApp() {
             setCharacters([...characters, person]);
           });
         } else {
-          console.log("Unexplected statys code:", response.status);
+          console.log("Unexplected status code:", response.status);
         }
       }) 
       .catch((error) => {
